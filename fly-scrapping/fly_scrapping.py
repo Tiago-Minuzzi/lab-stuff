@@ -8,11 +8,6 @@ arquivo_ids = "ids.test.csv"
 with open(arquivo_ids,"r") as arq_ids:
     arq_ids = arq_ids.read()
 
-# Browser driver
-drv = "/home/tiago/.local/bin/chromedriver"
-driver = webdriver.Chrome(drv)
-driver.get(fly_batch)
-
 # Target site
 fly_batch = "https://flybase.org/batchdownload"
 FEATURES = ("SYMBOL",
@@ -22,6 +17,11 @@ FEATURES = ("SYMBOL",
             "GO_BIOLOGICAL_PROCESS",
             "GO_CELLULAR_COMPONENT",
             "DROSOPHILA_ORTHOLOGS")
+
+# Browser driver
+drv = "/home/tiago/.local/bin/chromedriver"
+driver = webdriver.Chrome(drv)
+driver.get(fly_batch)
 
 # FIRST PAGE
 # Fill box with ids from file
