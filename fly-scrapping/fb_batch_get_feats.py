@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
 arquivo_ids = "/home/tiago/Database/softwares/my_git/lab-stuff/fly-scrapping/ids.test.csv" 
+feat_file = "flybase_batch_features.txt"
+
 with open(arquivo_ids,"r") as arq_ids:
     arq_ids = arq_ids.read()
 
@@ -24,7 +26,15 @@ submeter.click()
 
 #SECOND PAGE
 ids = driver.find_elements_by_xpath("//*[@id]")
-all_feat = []
+all_feats=[]
+# Store webpage ids in list
 for ii in ids:
-    print(ii.get_attribute("id"))
+    ii=(str(ii.get_attribute("id")))
+    if ii.isupper():
+        all_feats.append(ii)
+# Write list items to file
+with open(feat_file, "w") as ff:
+    for i in all_feats:
+        i=i.strip()
+        ff.write(i+"\n")
 driver.quit()
