@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
 # Paths and type of files
-csvs = glob.glob("*.csv")
+csvs = glob.glob("test/*.ids.txt")
 drv = "/home/tiago/.local/bin/chromedriver" # path to browser driver
 # Target site
 fly_batch = "https://flybase.org/batchdownload"
