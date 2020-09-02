@@ -1,2 +1,2 @@
 # lab-stuff
-General scripts for usage at Laboratory
+General scripts for usage at Laboratory.
