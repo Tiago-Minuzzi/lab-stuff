@@ -2,12 +2,14 @@
 import os
 import glob
 import time
+from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
 # Paths and type of files
+home = Path.home()
 csvs = glob.glob("test/*.txt")
-drv = "/home/tiago/.local/bin/chromedriver" # path to browser driver
+drv = f"{home}/.local/bin/chromedriver" # path to browser driver
 # Target site
 fly_batch = "https://flybase.org/batchdownload"
 FEATURES = ("SYMBOL",
