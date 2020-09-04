@@ -6,8 +6,8 @@
 export WD="."
 
 # Softwares settings
-BLAST="/home/labdros/software/ncbi-blast-2.10.0+/bin/blastn"
-FQTOFA="$(which fastq_to_fasta)"
+BLAST="/home/tiago/Database/software/ncbi-blast-2.10.0+/bin/blastn"
+# FQTOFA="$(which fastq_to_fasta)"
 
 # Directories
 FASTQIN="$WD/01_FASTQ"
@@ -23,6 +23,7 @@ SCOV="$WD/09_SCOV"
 QSCOV70="$WD/10_QSCOV70"
 IDSEQ="$WD/11_IDSEQ"
 SAMPLEBLAST="$WD/12_SAMPLEBLAST"
+TMPIDS="$WD/.tmp-ids"
 
 # Files
 REF1="$WD/00_reference/Mos_3.fasta"
@@ -31,7 +32,7 @@ GPAT1="$WD/00_reference/gpat1.tmp"
 GPAT2="$WD/00_reference/gpat2.tmp"
 ADAPTTOTAL="$WD/00_reference/adapt_total_limpo.txt"
 
-# # M01: separar sequências que possuem mariner
+# M01: separar sequências que possuem mariner
 mkdir -p $MOSFQ
 for FASTQ in $FASTQIN/*.fastq;
 do
@@ -45,9 +46,9 @@ do
 	grep -f $GPAT2 $FASTQ -B1 -A2 | sed '/^--$/d' > ${FASTQ%.fastq}_mos5.fastq &&
 	mv $FASTQIN/*_mos5.fastq $MOSFQ && rm $GPAT2
 done
-# #_______________________________________________________________________________________________________________________________
+#_______________________________________________________________________________________________________________________________
 
-# # M02: fastq to fasta
+# M02: fastq to fasta
 mkdir -p $MOSFA
 for FMOSFQ in $MOSFQ/*.fastq;
 do 
@@ -56,7 +57,7 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
-# #M03: remove mariner and adapters (and "fish" sequence)
+M03: remove mariner and adapters (and "fish" sequence)
 mkdir -p $CLEANFISH
 for FMOSFA in $MOSFA/*.fa
 do
@@ -66,7 +67,7 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
-# # M04: Remove adapters and arctifacts from sequences (NEW)
+# M04: Remove adapters and arctifacts from sequences (NEW)
 mkdir -p $CLEANADAPT
 for FCLNFS in $CLEANFISH/*.fa
 do
@@ -99,7 +100,7 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
-#M07: remover os hits contra ele mesmo e as repetições AxB ou BxA
+M06: remover os hits contra ele mesmo e as repetições AxB ou BxA
 mkdir -p $FILTHIT
 for MHIT in $MULTIHIT/*multihit.tsv;
 do
@@ -108,7 +109,7 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
-# #M08: criação da tabela scov
+M07: criação da tabela scov
 mkdir -p $SCOV
 for FSCOV in $FILTHIT/*filt.tsv;
 do
@@ -121,18 +122,18 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
-# #M08: sequências que deram blast devido ao adapt
-# # Selecionar linhas com o adaptador
-# grep CACTCTT $1 > $2
-# # Selecionar linhas sem o adaptador
-# grep -v CACTCTT $1 > $3
-# #pegar ids da tabela que tem os adaptadores
-# cut -f1 $2 > ids1.txt 
-# cut -f2 $2 > ids2.txt 
-# cat ids1.txt ids2.txt | sort | uniq > ids_adapter.txt && rm ids1.txt ids2.txt
-# # Pegar sequencias com adaptador
-# grep -A1 -f ids_adapter.txt $4 | sed '/^--$/d' > $5 && rm ids_adapter.txt
-# #_______________________________________________________________________________________________________________________________
+#M08: sequências que deram blast devido ao adapt
+# Selecionar linhas com o adaptador
+grep CACTCTT $1 > $2
+# Selecionar linhas sem o adaptador
+grep -v CACTCTT $1 > $3
+#pegar ids da tabela que tem os adaptadores
+cut -f1 $2 > ids1.txt 
+cut -f2 $2 > ids2.txt 
+cat ids1.txt ids2.txt | sort | uniq > ids_adapter.txt && rm ids1.txt ids2.txt
+# Pegar sequencias com adaptador
+grep -A1 -f ids_adapter.txt $4 | sed '/^--$/d' > $5 && rm ids_adapter.txt
+#_______________________________________________________________________________________________________________________________
 
 #M09: separar sequências iguais e pegar uma representante (q/scov>=70)
 mkdir -p $QSCOV70
@@ -143,26 +144,34 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
-# #M10: pegar as sequências correspondentes aos ids
-# mkdir -p $IDSEQ
-# for FIDSEQ in $QSCOV70/*qscov70.tsv
-# do
-# 	cut -f1 $FIDSEQ | sed "/qseqid/d" | sort | uniq > ids.txt
-# 	grep -A1 -f ids.txt $FCLNFS | sed '/^--$/d' > ${FIDSEQ%_qscov70.tsv}_fastafinal.fa && 
-# 	rm ids.txt 
-# 	mv $QSCOV70/*fastafinal.fa $IDSEQ
-# done
+# #M10: get sequences from list of ids
+mkdir -p $IDSEQ
+mkdir -p $TMPIDS
+# Get ids
+for FIDS in $QSCOV70/*qscov70.tsv;
+do
+	cut -f1 $FIDS | sed "/qseqid/d" | sort | uniq > ${FIDS%_qscov70.tsv}_ids.txt &&
+	mv ${FIDS%_qscov70.tsv}_ids.txt $TMPIDS
+done
+# Get sequences
+for FIDSEQ in $CLEANADAPT/*clean.fa
+do
+	for FID in $TMPIDS/*ids.txt
+	do
+		grep -A1 -f $FID $FIDSEQ | sed '/^--$/d' > ${FIDSEQ%_clean.fa}_fastafinal.fa 
+	done
+	mv $CLEANADAPT/*fastafinal.fa $IDSEQ
+done
 #---------------------------------------------------------------------------------------------------------------------------------
 
-# ##comparação de amostras
 # #M11: blast de uma amostra contra outra
 # mkdir -P $SAMPLEBLAST 
 # for FSPBLAST in $IDSEQ/*fastafinal.fa
 # do
 # 	$BLAST -query $1 -subject $2 -outfmt "7 qseqid sseqid pident length qlen slen evalue bitscore qcovs qstart qend sstart send qseq sseq" -out $3
 # 	mv $IDSEQ/* $SAMPLEBLAST
-
-# #_______________________________________________________________________________________________________________________________
+# done
+#_______________________________________________________________________________________________________________________________
 
 # #M12: remove blast com adapt (ver se precisa)
 # ##1 arquivo da tabela completa
