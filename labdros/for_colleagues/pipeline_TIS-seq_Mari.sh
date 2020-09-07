@@ -122,17 +122,18 @@ do
 done
 #_______________________________________________________________________________________________________________________________
 
+# Unecessary so far
 #M08: sequências que deram blast devido ao adapt
 # Selecionar linhas com o adaptador
-grep CACTCTT $1 > $2
+#grep CACTCTT $1 > $2
 # Selecionar linhas sem o adaptador
-grep -v CACTCTT $1 > $3
+#grep -v CACTCTT $1 > $3
 #pegar ids da tabela que tem os adaptadores
-cut -f1 $2 > ids1.txt 
-cut -f2 $2 > ids2.txt 
-cat ids1.txt ids2.txt | sort | uniq > ids_adapter.txt && rm ids1.txt ids2.txt
+#cut -f1 $2 > ids1.txt 
+#cut -f2 $2 > ids2.txt 
+#cat ids1.txt ids2.txt | sort | uniq > ids_adapter.txt && rm ids1.txt ids2.txt
 # Pegar sequencias com adaptador
-grep -A1 -f ids_adapter.txt $4 | sed '/^--$/d' > $5 && rm ids_adapter.txt
+#grep -A1 -f ids_adapter.txt $4 | sed '/^--$/d' > $5 && rm ids_adapter.txt
 #_______________________________________________________________________________________________________________________________
 
 #M09: separar sequências iguais e pegar uma representante (q/scov>=70)
