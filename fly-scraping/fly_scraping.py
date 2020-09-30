@@ -47,7 +47,7 @@ for cf in csvs:
     time.sleep(2)
     # Create new name
     _, cf_name = cf.split('/')
-    cf_stem, _, _ = cf_name.split('.')
+    cf_stem, *_ = cf_name.split('.')
     new_name = f'{cf_stem}_flybase.csv'
     # Rename file
     os.rename(downf, new_name)
