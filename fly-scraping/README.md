@@ -1,7 +1,7 @@
 # FLY SCRAPING
 Batch download *Drosophila spp.* info from [Flybase](https://flybase.org/batchdownload). Script written in Python, using Selenium module for the tasks.
 ## Installation
-[Download](https://raw.githubusercontent.com/Tiago-Minuzzi/lab-stuff/master/fly-scrapping/fly_scrapping.py) the fly scraping python script and install dependencies.
+[Download](https://raw.githubusercontent.com/Tiago-Minuzzi/lab-stuff/master/fly-scraping/fly_scrapping.py) the fly scraping python script and install dependencies.
 ## Dependencies
 - Python version 3.x;
 - Selenium module (Can be installed via pip install or conda install);
