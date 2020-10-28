@@ -10,8 +10,6 @@ url = input("Paste repbase results url: ")
 csv_out = input("Name for the output file: ")
 # Header
 HEADER = "Name,From,To,Name,From,To,Class,Dir,Sim,Pos/Mm:Ts,Score"
-# Insert repbase results URL here
-# url = 'https://www.girinst.org/cgi-bin/censor/show_results.cgi?id=10762&lib=root'
 # Request page and fetch results
 page = requests.get(url)
 # Store the contents of the website
