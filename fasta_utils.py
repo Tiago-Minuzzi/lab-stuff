@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import sys
 
+
 def remove_ext(fasta_file):
     if '/' in fasta_file:
         *_, fasta_name = fasta_file.split('/')
-        base, _ = fasta_name.split('.')
+        base, *_ = fasta_name.split('.')
         return base
     else:
-        base, _ = fasta_file.split('.')
+        base, *_ = fasta_file.split('.')
         return base
 
 def linear_fasta(in_fasta):
