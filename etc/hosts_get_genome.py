@@ -15,7 +15,6 @@ drv = f"{home}/.local/bin/chromedriver" # path to browser driver
 ncbi_nucl = "https://www.ncbi.nlm.nih.gov/genome"
 # Ids file and fasta format
 mitgen_ids = "wolbachia_hosts.txt"
-fasta_cds = "fasta_cds_aa"
 # Open browser, read file
 driver = webdriver.Chrome(drv)
 # Open browser, read files and send to form
