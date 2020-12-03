@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf-8
 '''
-Para rodar o script é necessário Python3
-e o pacote pandas.
+Para rodar o script é necessário Python3,
+o pacote pandas e openpyxl.
 - Para instalar o pandas use:
 pip3 install --user pandas
-
+pip3 install --user openpyxl
 Para rodar o script coloque o nomes dos arquivos
 nas variáveis e depois rode o script no terminal.
 - Uso:
@@ -19,7 +19,9 @@ signalp = 'sinal_proteico.tabular'
 promotores = 'promotor_prote.tabular'
 hmmer = 'hmm_clean.csv'
 saida = 'marcos_concat_tabs_final.tsv'
+saida_xlsx = 'marcos_concat_tabs_final.xlsx'
 # Ler arquivos
+print("Reading files...")
 wps = pd.read_csv(wolfpsort, sep='\t')
 blast = pd.read_csv(blastp, sep='\t')
 sigp = pd.read_csv(signalp, sep='\t')
@@ -39,6 +41,7 @@ wbpsph = pd.merge(wbpsp,hmm, on='ID', how='outer')
 # Escrever dataframe final para arquivo tsv
 print("Merging tabs...")
 wbpsph.to_csv(saida, sep='\t',index=False)
+wbpsph.to_excel(saida_xlsx, index=False)
 print("Done!")
 # Salvar xlsx com as tabs individualmente
 print("Writing individual sheets to xlsx file...")
