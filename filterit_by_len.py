@@ -13,12 +13,15 @@ class Inspetor:
         self.diretorio = os.path.dirname(self.arquivo)
         self.caminho = os.path.abspath(self.diretorio)
         self.nome = os.path.basename(self.arquivo)
-        self.novo = f'filtrado_{self.nome}'
+        self.novo = f'filtered_{self.nome}'
         self.saida = os.path.join(self.caminho, self.novo)
 
         with open(self.arquivo) as arq_in:
-            arq_in = arq_in.readlines()
-            self.palavras = [len(linha.strip()) for linha in arq_in if not linha.startswith('>')]
+            self.palavras = []
+            for record in SeqIO.parse(arq_in, 'fasta'):
+                 
+                self.palavras.append(len(record.seq))
+            self.palavras = set(self.palavras)
             self.def_menor = min(self.palavras)
             self.def_maior = max(self.palavras)
 
