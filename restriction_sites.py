@@ -3,11 +3,13 @@
 """
 Created by Tiago Minuzzi
 """
+import sys
 from Bio import SeqIO
 from Bio.Restriction import *
 
+INFILE=sys.argv[1]
 
-with open('dsim-all-chromosome-r2.02.fasta') as fasta:
+with open(INFILE) as fasta:
     for record in SeqIO.parse(fasta, 'fasta'):
         fid = record.id
         sequencia = record.seq
@@ -15,24 +17,13 @@ with open('dsim-all-chromosome-r2.02.fasta') as fasta:
         # Find restriction sites        
         sitiosHIII = HindIII.search(sequencia)
         sitiosERI = EcoRI.search(sequencia)
-        # Find fragments from restriction sites
-        hind_seqs = HindIII.catalyze(sequencia)
-        eco_seqs = EcoRI.catalyze(sequencia)
-        # HindIII
-        # Get fragment sequence            
-        for fragmentoH in hind_seqs:    
-            print(f'>{fid}|{HindIII}\n{fragmentoH}')
-            # Cut HindIII fragments with EcoRI
-            frag_seqsEH = EcoRI.catalyze(fragmentoH)
-            for fseqEH in frag_seqsEH:
-                    fseqEH = str(fseqEH)
-                    print(f'>{fid}|{EcoRI}x{HindIII}\n{fseqEH}')
-        # EcoRI
-        # Get fragment sequence            
-        for fragmentoE in eco_seqs:
-            print(f'>{fid}|{EcoRI}\n{fragmentoE}')
-            # Cut EcoRI fragments with HindIII
-            frag_seqsHE = HindIII.catalyze(fragmentoE)
-            for fseqHE in frag_seqsHE:
-                fseqHE = str(fseqHE)
-                print(f'>{fid}|{HindIII}x{EcoRI}\n{fseqHE}')
+        allsites= sitiosHIII+sitiosERI
+        allsites=list(set(allsites))
+        allsites.sort()
+        allsites.insert(0,0)
+        for i,j in zip(allsites,allsites[1:]+[None]):
+            sitio=f'{i+1}:{j}'
+            sitio=sitio.replace('None',str(len(sequencia)))
+            corte=sequencia[i:j]
+            tam=len(corte)
+            print(f'>{fid}|pos={sitio}|length={tam}\n{corte}')
