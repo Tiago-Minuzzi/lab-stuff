@@ -13,7 +13,7 @@ with open(FASTA) as fasta:
     arqs=[open(f'splitted_{str(i+1).zfill(n_zeros)}.fasta','w') for i in range(N_FILES)]
     # parse input fasta
     for num, line in enumerate(SeqIO.parse(fasta,"fasta")):
-        fid=line.id
+        fid=line.description
         seq=line.seq
         record=f'>{fid}\n{seq}\n'
         arqs[num % N_FILES].write(record)
