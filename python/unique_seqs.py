@@ -3,21 +3,21 @@
 # Usage: python3 fasta_rm_dup.py your_file.fasta
 # Input file and script must be in the same folder
 import sys
-from Bio import SeqIO
+from collections import defaultdict
+from Bio.SeqIO.FastaIO import SimpleFastaParser
 # File, records list and sequence dictionary
 in_fas = sys.argv[1]
 glob_list=[]
-fas_dict={}
+fas_dict=defaultdict(list)
+group_n = 0
 # Read fasta and append records as pairs to list
-for record in SeqIO.parse(in_fas, "fasta"):
-    fid,fsq = record.id,str(record.seq)
-    glob_list.append([fid,fsq])
-# Turn sequences as keys and ids as values
-for k,v in glob_list:
-    if v not in fas_dict:
-        fas_dict[v]=[] # store multiple values for each key
-    fas_dict[v].append(k)
+with open(in_fas) as fa:
+    for fid, fsq in SimpleFastaParser(fa):
+        fas_dict[fsq].append(fid)
+
 # Print fas_dict in fasta format
-for ffseq,ffid in fas_dict.items():
+for ffseq, ffid in fas_dict.items():
+    group_n+=1
+    count = len(ffid)
     ffid='|'.join(ffid) # return ffid without brackets
-    print(f'>{ffid}\n{ffseq}')
+    print(f'>seq_{group_n};count={count};{ffid}\n{ffseq}')
